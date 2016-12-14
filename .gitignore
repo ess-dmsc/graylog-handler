@@ -1,0 +1,5 @@
+__pycache__
+*.wpu
+*.wpr
+.DS_Store
+build/*
