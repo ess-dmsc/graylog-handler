@@ -14,7 +14,7 @@ def thread_function(host, port, msg_queue, stat_queue, conf_queue):
 	messages to that server."""
 	errorWait = 5.0
 	cSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	cSocket.settimeout(5.0)
+	cSocket.settimeout(1.0)
 	connected = False
 	last_connection = time.time()
 	msgBuffer = bytearray()
@@ -54,7 +54,7 @@ def thread_function(host, port, msg_queue, stat_queue, conf_queue):
 					cSocket.connect((host, port))
 					stat_queue.put("Connected")
 					connected = True
-				except socket.gaierror as e:
+				except (BlockingIOError, socket.gaierror, TimeoutError) as e:
 					stat_queue.put("Not connected")
 	if (connected):
 		try:
