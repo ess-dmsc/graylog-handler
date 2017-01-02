@@ -37,13 +37,13 @@ def thread_function(host, port, msg_queue, stat_queue, conf_queue):
 				try:
 					sent = cSocket.send(msgBuffer)
 					msgBuffer = msgBuffer[sent:]
-				except socket.error:
+				except socket.error as e:
 					connected = False
 					stat_queue.put("Disconnected")
 			else:
 				try:
 					msgBuffer = msg_queue.get(timeout = 0.5)
-				except Empty:
+				except Empty as e:
 					msgBuffer = bytearray()
 		else:
 			if (last_connection + 5 > time.time()):
@@ -54,7 +54,7 @@ def thread_function(host, port, msg_queue, stat_queue, conf_queue):
 					cSocket.connect((host, port))
 					stat_queue.put("Connected")
 					connected = True
-				except (BlockingIOError, socket.gaierror, TimeoutError) as e:
+				except (BlockingIOError, socket.gaierror, TimeoutError, OSError) as e:
 					stat_queue.put("Not connected")
 	if (connected):
 		try:
@@ -82,6 +82,7 @@ class GraylogConnection(object):
 		self.status_str = "Not connected"
 		thread_kwargs = {"host":host, "port":port, "msg_queue":self.message_queue, "stat_queue":self.status_queue, "conf_queue":self.conf_queue}
 		self.thread = threading.Thread(target = thread_function, kwargs = thread_kwargs)
+		self.thread.daemon = True
 		self.thread.start()
 	
 	#----------------------------------------------------------------------
@@ -129,14 +130,20 @@ class GraylogHandler(logging.Handler):
 		super(GraylogHandler, self).__init__()
 		self.queue_len = queue_len
 		if (None == servers):
-			self.graylog_servers = [("localhost", 12201), ("10.4.0.222", 12201)]
+			self.graylog_servers = [("localhost", 12201), ]
 		else:
 			self.graylog_servers = servers
 		
-		self.severity_levels = {50:2, 40:3, 30:4, 20:6, 10:7}
+		self.severity_levels = {50:2, 40:3, 30:4, 20:6, 10:7, 0:2}
 		self.connections = []
 		self.host = socket.gethostname()
 		self.CreateConnections()
+	
+	#----------------------------------------------------------------------
+	def close(self):
+		for i in range(len(self.connections)):
+			con = self.connections.pop()
+			del con
 	
 	#----------------------------------------------------------------------
 	def CreateConnections(self):
