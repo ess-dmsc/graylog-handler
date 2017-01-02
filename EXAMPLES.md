@@ -1,4 +1,4 @@
-# Python log messages GraylogHandler
+# *GraylogHandler* examples
 Installation instructions can be found on the [GraylogHandler repository page](https://bitbucket.org/europeanspallationsource/grayloghandler/src). The intent of this wiki page is to give you examples on how GraylogHandler as well as the Python logger modules can be used. Full documentation on the Python `logging` module can be found here: [https://docs.python.org/2/library/logging.html](https://docs.python.org/2/library/logging.html).
 
 ## Simple Python logging example (without Graylog)
