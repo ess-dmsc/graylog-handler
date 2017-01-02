@@ -17,7 +17,7 @@ Alternatively, copy the GraylogHandler directory to the location of your Python 
 Only three lines are required for basic usage of this module:
 
 ```python
-import logger
+import logging
 from GraylogHandler import GraylogHandler
 logging.getLogger().addHandler(GraylogHandler())
 ```
@@ -25,7 +25,7 @@ logging.getLogger().addHandler(GraylogHandler())
 All log messages produced using the builtin `logger` module will now also be sent to Graylog servers running on the local machine and listening on port 12201, e.g.:
 
 ```python
-logger.error("This is a fatal error!")
+logging.error("This is a fatal error!")
 ```
 
 ## Documentation
