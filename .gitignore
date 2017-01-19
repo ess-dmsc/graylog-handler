@@ -3,3 +3,4 @@ __pycache__
 *.wpr
 .DS_Store
 build/*
+*.pyc

@@ -8,6 +8,21 @@ import threading
 from queue import Queue, Empty
 import time
 
+try:
+	ConnectionRefusedError
+except NameError:
+	ConnectionRefusedError = socket.error
+
+try:
+	BlockingIOError
+except NameError:
+	BlockingIOError = socket.error
+	
+try:
+	TimeoutError
+except NameError:
+	TimeoutError = socket.error
+
 #----------------------------------------------------------------------
 def thread_function(host, port, msg_queue, stat_queue, conf_queue):
 	""""Thread function which connects to a Graylog server and sends log
@@ -21,8 +36,8 @@ def thread_function(host, port, msg_queue, stat_queue, conf_queue):
 	try:
 		cSocket.connect((host, port))
 		stat_queue.put("Connected")
-		connected = True
-	except (ConnectionRefusedError, socket.gaierror, socket.timeout) as e:
+		connected = True  
+	except (ConnectionRefusedError, socket.gaierror, socket.timeout) as e: #ConnectionRefusedError,
 		stat_queue.put("Not connected")
 		
 	while (True):
@@ -59,7 +74,7 @@ def thread_function(host, port, msg_queue, stat_queue, conf_queue):
 	if (connected):
 		try:
 			cSocket.shutdown(socket.SHUT_RDWR)
-		except OSError as e:
+		except (OSError, socket.error) as e:
 			pass
 	cSocket.close()
 	

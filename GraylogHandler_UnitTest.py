@@ -99,7 +99,7 @@ class TestGraylogConnection(unittest.TestCase):
 class TestGraylogHandler(unittest.TestCase):
 	#----------------------------------------------------------------------
 	def testDefaultServerCreation(self):
-		server_list = (("localhost", 12201), ("10.4.0.222", 12201))
+		server_list = (("localhost", 12201), ("192.168.12.11", 12201))
 		pToG = GraylogHandler()
 		for srv in pToG.graylog_servers:
 			self.assertIn(srv, server_list, "Unable to find server in list.")
