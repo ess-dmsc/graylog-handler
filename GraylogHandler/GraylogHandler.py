@@ -130,7 +130,7 @@ class GraylogHandler(logging.Handler):
 		super(GraylogHandler, self).__init__()
 		self.queue_len = queue_len
 		if (None == servers):
-			self.graylog_servers = [("localhost", 12201), ]
+			self.graylog_servers = [("localhost", 12201), ("192.168.12.11", 12201)]
 		else:
 			self.graylog_servers = servers
 		
