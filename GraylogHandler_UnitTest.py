@@ -94,6 +94,20 @@ class TestGraylogConnection(unittest.TestCase):
 		gConnection.SendMsg("test")
 		time.sleep(0.1)
 		self.assertEqual(gConnection.messages_in_queue, 1, "Expected 1 message in queue. This was not the case.")
+	
+	#----------------------------------------------------------------------
+	def testQueueLengthLimit(self):
+		queue_limit = 50
+		host = "no_host"
+		port = self.getPort()
+		gConnection = GraylogConnection(host, port, queue_limit)
+		self.assertEqual(gConnection.messages_in_queue, 0, "Expected 0 messages in queue. This was not the case.")
+		for i in range(queue_limit):
+			gConnection.SendMsg("test")
+			self.assertEqual(gConnection.messages_in_queue, i + 1, "Expected %i message in queue. This was not the case." % (i + 1, ))
+		gConnection.SendMsg("test")
+		time.sleep(0.1)
+		self.assertEqual(gConnection.messages_in_queue, queue_limit, "Expected %i message in queue. This was not the case." % (queue_limit, ))
 
 ########################################################################
 class TestGraylogHandler(unittest.TestCase):
